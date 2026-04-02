@@ -155,7 +155,7 @@ export default function AdminMembersPage() {
 
       {data ? (
         <div className="mt-5">
-          <Pagination page={page} limit={limit} total={data.total} onPageChange={setPage} />
+          <Pagination page={page} limit={limit} total={data.total ?? 0} onPageChange={setPage} />
         </div>
       ) : null}
 
