@@ -131,7 +131,7 @@ export default function EventDetailPage() {
     }
   }
 
-  function downloadIcs() {
+  /*function downloadIcs() {
     const ics = eventToIcs(event)
     const blob = new Blob([ics], { type: 'text/calendar' })
     const url = URL.createObjectURL(blob)
@@ -140,9 +140,21 @@ export default function EventDetailPage() {
     a.download = `${event.slug}.ics`
     a.click()
     URL.revokeObjectURL(url)
-  }
+  }*/
+  function downloadIcs() {
+  if (!event) return
 
-  function getGoogleCalendarLink() {
+  const ics = eventToIcs(event)
+  const blob = new Blob([ics], { type: 'text/calendar' })
+  const url = URL.createObjectURL(blob)
+  const a = document.createElement('a')
+  a.href = url
+  a.download = `${event.slug}.ics`
+  a.click()
+  URL.revokeObjectURL(url)
+}
+
+  /*function getGoogleCalendarLink() {
     const start = new Date(event.startAt).toISOString().replace(/-|:|\.\d\d\d/g, '')
     const endAt = event.endAt ? new Date(event.endAt) : new Date(new Date(event.startAt).getTime() + 3600000)
     const end = endAt.toISOString().replace(/-|:|\.\d\d\d/g, '')
@@ -154,9 +166,26 @@ export default function EventDetailPage() {
       location: event.location?.address || event.location?.name || ''
     })
     return `https://calendar.google.com/calendar/render?${params.toString()}`
-  }
+  }*/
+ function getGoogleCalendarLink() {
+  if (!event) return '#'
 
-  async function handleShare() {
+  const start = new Date(event.startAt).toISOString().replace(/-|:|\.\d\d\d/g, '')
+  const endAt = event.endAt ? new Date(event.endAt) : new Date(new Date(event.startAt).getTime() + 3600000)
+  const end = endAt.toISOString().replace(/-|:|\.\d\d\d/g, '')
+
+  const params = new URLSearchParams({
+    action: 'TEMPLATE',
+    text: event.title,
+    dates: `${start}/${end}`,
+    details: event.description || '',
+    location: event.location?.address || event.location?.name || ''
+  })
+
+  return `https://calendar.google.com/calendar/render?${params.toString()}`
+}
+
+  /*async function handleShare() {
     const shareData = {
       title: event.title,
       text: event.description || '',
@@ -178,7 +207,32 @@ export default function EventDetailPage() {
         setFeedback('Unable to copy link')
       }
     }
+  }*/
+ async function handleShare() {
+  if (!event) return
+
+  const shareData = {
+    title: event.title,
+    text: event.description || '',
+    url: typeof window !== 'undefined' ? window.location.href : ''
   }
+
+  if (navigator.share) {
+    try {
+      await navigator.share(shareData)
+    } catch (err) {
+      console.warn('Share cancelled', err)
+    }
+  } else {
+    try {
+      await navigator.clipboard.writeText(window.location.href)
+      setFeedback('Link copied to clipboard')
+      setTimeout(() => setFeedback(null), 2500)
+    } catch {
+      setFeedback('Unable to copy link')
+    }
+  }
+}
 
   // presentational helpers
   const priceText = (p?: number) => (typeof p === 'number' && p > 0 ? `KSH ${(p / 100).toFixed(2)}` : 'Free')
