@@ -1,0 +1,84 @@
+@import "tailwindcss";
+
+:root {
+  /* Brand Colors */
+  --gs-gold: #E0BE53;
+  --gs-gold-glow: rgba(224, 190, 83, 0.3);
+  
+  /* Modern Dark (Deep Charcoal, not pure black) */
+  --gs-dark: #0a0a0b;
+  --gs-dark-soft: #161719;
+
+  /* Surfaces */
+  --background: var(--gs-dark);
+  --foreground: #ffffff;
+  
+  /* Font Assignments */
+  --font-sans: var(--font-geist-sans);
+  --font-serif: var(--font-playfair);
+}
+
+@theme inline {
+  --color-gold: var(--gs-gold);
+  --color-dark: var(--gs-dark);
+  --color-dark-soft: var(--gs-dark-soft);
+  
+  --font-sans: var(--font-sans);
+  --font-serif: var(--font-serif);
+  
+  /* Custom animation for your CTAs */
+  @keyframes shine {
+    from { left: -100%; }
+    to { left: 100%; }
+  }
+}
+
+/* --------------------------------
+   BASE & UTILITIES
+-------------------------------- */
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans), system-ui, sans-serif;
+}
+
+/* Luxury Editorial Heading */
+.editorial-title {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-weight: 900;
+  letter-spacing: -0.03em;
+}
+
+/* Light-Reflecting Card (Premium "Solace" Feel) */
+.glass-card {
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+}
+
+/* Subtle Gold Text Glow */
+.text-glow {
+  text-shadow: 0 0 15px var(--gs-gold-glow);
+}
+
+.link-underline {
+  position: relative;
+}
+
+.link-underline::after {
+  content: "";
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  height: 1px;
+  width: 0;
+  background: var(--gs-gold);
+  transition: width 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.link-underline:hover::after {
+  width: 100%;
+}
