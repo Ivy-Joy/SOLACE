@@ -1,1 +1,0 @@
-//Events detail + registrations
