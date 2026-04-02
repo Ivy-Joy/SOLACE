@@ -1,6 +1,6 @@
 // apps/app-frontend/src/lib/mockApi.ts
-import { EventItem } from '@/types/events';
-import { Registration } from '@/types/registrations';
+import { EventItem } from '@/src/types/events';
+import { EventRegistration } from '@/src/types/registrations';
 import { nanoid } from 'nanoid';
 
 // In-memory mock DB
@@ -47,7 +47,7 @@ const mockEvents: EventItem[] = [
   }
 ];
 
-let registrations: Registration[] = [
+const registrations: EventRegistration[] = [
   {
     id: 'r1',
     eventId: 'e1',
@@ -96,7 +96,7 @@ export async function registerForEvent(payload: {
   email?: string;
   phone?: string;
   ticketTypeId?: string;
-}): Promise<Registration> {
+}): Promise<EventRegistration> {
   await delay(400);
   const ev = mockEvents.find((e) => e.id === payload.eventId);
   if (!ev) throw new Error('Event not found');
@@ -119,7 +119,7 @@ export async function registerForEvent(payload: {
   const status =
     seatsLeftForTicket > 0 && eventSeatsLeft > 0 ? 'confirmed' : 'waitlisted';
 
-  const reg: Registration = {
+  const reg: EventRegistration = {
     id: nanoid(8),
     eventId: ev.id,
     name: payload.name,
@@ -142,7 +142,7 @@ export async function registerForEvent(payload: {
 
 export async function getRegistrationsForEvent(
   eventId: string
-): Promise<Registration[]> {
+): Promise<EventRegistration[]> {
   await delay();
   return registrations.filter((r) => r.eventId === eventId).slice().reverse();
 }
@@ -164,7 +164,7 @@ export async function exportRegistrationsCsv(eventId: string): Promise<string> {
 
 export async function checkInRegistration(
   registrationId: string
-): Promise<Registration> {
+): Promise<EventRegistration> {
   await delay();
   const r = registrations.find((x) => x.id === registrationId);
   if (!r) throw new Error('Not found');
